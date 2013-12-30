@@ -26,7 +26,7 @@ public class HttpHandler {
         	URL url;
         	
         	if(Boolean.parseBoolean(prop.getProperty("debug"))){ 
-        	    url = new URL("http", "192.168.0.25", 8000, "/rpc");
+        	    url = new URL("http", "192.168.0.19", 8000, "/rpc");
             }
         	else{
         		url = new URL("http", prop.getProperty("endpoint"), Integer.parseInt(prop.getProperty("rpcport")), "/rpc");
