@@ -18,12 +18,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+//import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -48,6 +48,7 @@ public class UI extends JFrame {
     private GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     private ArrayList<String[]> results = new ArrayList<String[]>();
     private int i;
+    private DbHandler dbHandler;
 
     //Frame
     private JFrame Frame;
@@ -56,6 +57,7 @@ public class UI extends JFrame {
     //Constructor
     public UI(Properties prop, JsonHandler jsonHandler) throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException{    
         httphandler = new HttpHandler(prop);
+        dbHandler = new DbHandler();
         this.prop = prop;
         this.jsonHandler = jsonHandler;
         jsRequest = jsonHandler.buildJson(prop);
@@ -65,13 +67,15 @@ public class UI extends JFrame {
         
         //hide mouse cursor
         
-        Frame = setupDisplay();
-        Frame.revalidate();
-        Frame.repaint();
+        
         
         i = 1;
         updateResult();
         Run();
+        
+        Frame = setupDisplay();
+        Frame.revalidate();
+        Frame.repaint();
     }
     
     
@@ -83,6 +87,7 @@ public class UI extends JFrame {
     private void updateResult() throws IOException{
         try{
         	results = jsonHandler.readJson(httphandler.GetData(prop, jsRequest));
+        	dbHandler.WriteData(results);
         }
         catch(Exception e){
         	System.out.println(e.getMessage());

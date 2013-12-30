@@ -5,7 +5,7 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="SMAWebBox">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../../../Program Files/eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../../../DevEnv/eclipse-jee-kepler-SR1-win32-x86_64/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
@@ -19,6 +19,11 @@
         <pathelement location="src/dk/netconn/smawebbox/resources/http-20070405.jar"/>
         <pathelement location="src/dk/netconn/smawebbox/resources/json-lib-2.4-jdk15.jar"/>
         <pathelement location="src/dk/netconn/smawebbox/resources"/>
+        <pathelement location="../../../../../Program Files/Java/jdk1.7.0_45/db/lib/derby.jar"/>
+        <pathelement location="../../../../../Program Files/Java/jdk1.7.0_45/db/lib/derbyclient.jar"/>
+        <pathelement location="../../../../../Program Files/Java/jdk1.7.0_45/db/lib/derbyrun.jar"/>
+        <pathelement location="../../../../../Program Files/Java/jdk1.7.0_45/db/lib/derbytools.jar"/>
+        <pathelement location="src/dk/netconn/smawebbox/resources/commons-io-2.4.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -55,22 +60,9 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="Main (1)">
+    <target name="Main">
         <java classname="dk.netconn.smawebbox.Main" failonerror="true" fork="yes">
             <classpath refid="SMAWebBox.classpath"/>
         </java>
     </target>
-    <target name="Build JAR">
-	    <manifestclasspath property="lib.list" jarfile="./bin/SMAWebBox.jar">
-	    	<classpath refid="SMAWebBox.classpath"/>
-		</manifestclasspath>
-		<jar jarfile="./SMAWebBox.jar"
-	    	 basedir="."
-	     	includes="dk/netconn/smawebbox/**" >
-	    	<manifest>
-	        	<attribute name="Main-Class" value="dk.netconn.smawebbox.Main"/>
-	        	<attribute name="Class-Path" value="${lib.list}"/>
-	    	</manifest>
-		</jar>
-	</target>
 </project>
