@@ -88,6 +88,7 @@ public class UI extends JFrame {
         try{
         	results = jsonHandler.readJson(httphandler.GetData(prop, jsRequest));
         	dbHandler.WriteData(results);
+        	dbHandler.SelectData();
         }
         catch(Exception e){
         	System.out.println(e.getMessage());
