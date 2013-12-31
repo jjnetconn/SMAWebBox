@@ -46,7 +46,7 @@ public class DbHandler {
 	private void CleanOldDb(){
 		try {
 			File f = new File( new File (".").getCanonicalPath() + "\\db");
-			System.out.println(new File (".").getCanonicalPath() + "\\db");
+			//System.out.println(new File (".").getCanonicalPath() + "\\db");
 			if(f.exists()){
 				FileUtils.deleteDirectory(new File( new File (".").getCanonicalPath() + "\\db"));
 
@@ -61,18 +61,28 @@ public class DbHandler {
 		String schema = "CREATE SCHEMA SMADATA";
 		
 		try {
-			PreparedStatement statement = Conn.prepareStatement(schema);
-			statement.executeUpdate();
+			PreparedStatement schemaStatement = Conn.prepareStatement(schema);
+			schemaStatement.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		String table = "CREATE TABLE SMADATA.OVERVIEW (ID INT not null primary key GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),GRIPWR INTEGER,GRIEGYTDY FLOAT,GRIEGYTOT INTEGER,OPSTT VARCHAR(128),MSG VARCHAR(128))";
+		String data = "CREATE TABLE SMADATA.DATA (ID INT not null primary key GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),GRIPWR INTEGER,GRIEGYTDY FLOAT,GRIEGYTOT INTEGER,OPSTT VARCHAR(128),MSG VARCHAR(128))";
 		
 		try {
-			PreparedStatement statement = Conn.prepareStatement(table);
-			statement.executeUpdate();
+			PreparedStatement dataStatement = Conn.prepareStatement(data);
+			dataStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String unit = "CREATE TABLE SMADATA.UNITS (ID INT not null primary key GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),GRIPWR VARCHAR(10),GRIEGYTDY VARCHAR(10),GRIEGYTOT VARCHAR(10),OPSTT VARCHAR(128),MSG VARCHAR(128))";
+		
+		try {
+			PreparedStatement unitStatement = Conn.prepareStatement(unit);
+			unitStatement.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,7 +90,7 @@ public class DbHandler {
 	}
 	
 	public void WriteData(ArrayList<String[]> results){
-		String insert = "INSERT INTO SMADATA.OVERVIEW (GRIPWR,GRIEGYTDY,GRIEGYTOT,OPSTT,MSG)"
+		String insert = "INSERT INTO SMADATA.DATA (GRIPWR,GRIEGYTDY,GRIEGYTOT,OPSTT,MSG)"
 				+ "Values(" 
 				+ Integer.parseInt(results.get(0)[0]) + "," 
 				+ Float.parseFloat(results.get(1)[0]) + ","
@@ -94,21 +104,42 @@ public class DbHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		insert = "INSERT INTO SMADATA.UNITS (GRIPWR,GRIEGYTDY,GRIEGYTOT,OPSTT,MSG)"
+				+ "Values(" 
+				+ "'" + results.get(0)[1] + "'," 
+				+ "'" + results.get(1)[1] + "',"
+				+ "'" + results.get(2)[1] + "',"
+				+ "'" + results.get(3)[1] + "',"
+				+ "'" + results.get(4)[1] + "')";
+		try {
+			PreparedStatement statement = Conn.prepareStatement(insert);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void SelectData(){
-		String sql = "SELECT * FROM SMADATA.OVERVIEW";
+		String data = "SELECT * FROM SMADATA.DATA WHERE ID = (SELECT MAX(ID) FROM SMADATA.DATA)";
+		String unit = "SELECT * FROM SMADATA.UNITS WHERE ID = (SELECT MAX(ID) FROM SMADATA.UNITS)";
+		
+		ResultSet rsData;
+		ResultSet rsUnit;
 		
 		try {
-			PreparedStatement statement = Conn.prepareStatement(sql);
+			PreparedStatement dataStatement = Conn.prepareStatement(data);
+			PreparedStatement unitStatement = Conn.prepareStatement(unit);
 			
-			ResultSet result = statement.executeQuery();
-			while(result.next()){
-				System.out.println(result.getObject("GriPwr").toString());
-				System.out.println(result.getObject("GriEgyTdy").toString());
-				System.out.println(result.getObject("GriEgyTot").toString());
-				System.out.println(result.getObject("OpStt").toString());
-				System.out.println(result.getObject("Msg").toString());
+			rsData = dataStatement.executeQuery();
+			rsUnit = unitStatement.executeQuery();
+			
+			while(rsData.next() && rsUnit.next()){
+				System.out.print(rsData.getObject("GriPwr").toString() + " " + rsUnit.getObject("GriPwr") + " ");
+				System.out.print(rsData.getObject("GriEgyTdy").toString() + " " + rsUnit.getObject("GriEgyTdy") + " ");
+				System.out.print(rsData.getObject("GriEgyTot").toString() + " " + rsUnit.getObject("GriEgyTot") + " ");
+				System.out.print(rsData.getObject("OpStt").toString() + " " + rsUnit.getObject("OpStt") + " ");
+				System.out.print(rsData.getObject("Msg").toString() + " " + rsUnit.getObject("Msg") + "\n");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -149,7 +149,6 @@ public class UI extends JFrame {
         
         //hide cursor
         frame.setCursor(getToolkit().createCustomCursor(new BufferedImage(1,1,BufferedImage.TYPE_INT_ARGB),new Point(0,0),null));
-//        frame.setAlwaysOnTop(true);
         JPanel Splash = new JPanel();
         JLabel SplashText = new JLabel("Henter data...");
         Splash.add(SplashText);
@@ -159,10 +158,9 @@ public class UI extends JFrame {
         if (!device.isFullScreenSupported ())
         {
         	frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-            //throw new UnsupportedOperationException ("Fullscreen mode is unsupported.");
         }
         else{
-        	device.setFullScreenWindow (frame);
+        	device.setFullScreenWindow(frame);
         }
         return frame;
     }
@@ -286,14 +284,9 @@ public class UI extends JFrame {
    }
    
    private BigDecimal calcCO2(String total){
-    
-//    try{
-//    	production = Double.parseDouble(total);
-//    }
-//    catch(Exception ex){
-//    }
+  
 	   BigDecimal production = new BigDecimal(total);	
-	   BigDecimal co2Factor = new BigDecimal(0.0005925);
+	   BigDecimal co2Factor = new BigDecimal(0.000452);
 	   BigDecimal co2Reduct = production.multiply(co2Factor);
     
     return co2Reduct.setScale(3, BigDecimal.ROUND_CEILING);
